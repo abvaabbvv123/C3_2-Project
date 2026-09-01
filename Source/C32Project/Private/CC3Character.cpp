@@ -161,7 +161,7 @@ void ACC3Character::StartJump(const FInputActionValue& value) {
 }
 void ACC3Character::StopJump(const FInputActionValue& value) {
 	StopJumping();
-	if (Stamina < MaxStamina) {
+	if (Stamina < MaxStamina && !bIsSprint) {
 		GetWorldTimerManager().SetTimer(StaminaTimerHandle, this, &ACC3Character::RegenStamina, StaminaTickInterval, true);
 	}
 }
@@ -281,7 +281,7 @@ void ACC3Character::OnDeath() {
 }
 //debuffs
 ////
-void ACC3Character::ApplySlow(float Strength, float Duration) {
+void ACC3Character::ApplySlow(float Strength, float Duration, const FString& LogText) {
 	if (!GetCharacterMovement()) {
 		return;
 	}
@@ -291,8 +291,10 @@ void ACC3Character::ApplySlow(float Strength, float Duration) {
 	}
 	bIsSlowed = true;
 	UpdateMovement();
+
 	if (ACC3PlayerController* PlayerController = Cast<ACC3PlayerController>(GetController())) {
 		PlayerController->UpdateDebuff("Debuff_Slow", true);
+		PlayerController->UpdateDebuffLog(LogText);
 	}
 	
 	GetWorldTimerManager().ClearTimer(SlowTimerHandle);
@@ -308,7 +310,7 @@ void ACC3Character::RevertSlow() {
 		PlayerController->UpdateDebuff("Debuff_Slow", false);
 	}
 }
-void ACC3Character::ApplyBlind(float Duration) {	
+void ACC3Character::ApplyBlind(float Duration, const FString& LogText) {
 	bIsBlinded = true;
 	if (BlindPostProcessMaterial && CameraComp) {
 		if (!BlindDynamicMaterial) {
@@ -323,6 +325,7 @@ void ACC3Character::ApplyBlind(float Duration) {
 	}
 	if (ACC3PlayerController* PlayerController = Cast<ACC3PlayerController>(GetController())) {
 		PlayerController->UpdateDebuff("Debuff_Blind", true);
+		PlayerController->UpdateDebuffLog(LogText);
 	}
 	GetWorldTimerManager().ClearTimer(BlindTimerHandle);
 	GetWorldTimerManager().SetTimer(BlindTimerHandle, this, &ACC3Character::RevertBlind, Duration, false);
@@ -338,10 +341,11 @@ void ACC3Character::RevertBlind() {
 		PlayerController->UpdateDebuff("Debuff_Blind", false);
 	}
 }
-void ACC3Character::ApplyCameraFix(float Duration) {
+void ACC3Character::ApplyCameraFix(float Duration, const FString& LogText) {
 	bIsCamerafixed = true;
 	if (ACC3PlayerController* PlayerController = Cast<ACC3PlayerController>(GetController())) {
 		PlayerController->UpdateDebuff("Debuff_CameraLock", true);
+		PlayerController->UpdateDebuffLog(LogText);
 	}
 	GetWorldTimerManager().ClearTimer(CameraFixTimerHandle);
 	GetWorldTimerManager().SetTimer(CameraFixTimerHandle, this, &ACC3Character::RevertCameraFix, Duration, false);
@@ -352,10 +356,11 @@ void ACC3Character::RevertCameraFix() {
 		PlayerController->UpdateDebuff("Debuff_CameraLock", false);
 	}
 }
-void ACC3Character::ApplyMoveReverse(float Duration) {
+void ACC3Character::ApplyMoveReverse(float Duration, const FString& LogText) {
 	bIsInputReverse = true;
 	if (ACC3PlayerController* PlayerController = Cast<ACC3PlayerController>(GetController())) {
 		PlayerController->UpdateDebuff("Debuff_MoveReverse", true);
+		PlayerController->UpdateDebuffLog(LogText);
 	}
 	GetWorldTimerManager().ClearTimer(MoveReverseTimerHandle);
 	GetWorldTimerManager().SetTimer(MoveReverseTimerHandle, this, &ACC3Character::RevertMoveReverse, Duration, false);
@@ -366,10 +371,11 @@ void ACC3Character::RevertMoveReverse() {
 		PlayerController->UpdateDebuff("Debuff_MoveReverse", false);
 	}
 }
-void ACC3Character::ApplyLookReverse(float Duration) {
+void ACC3Character::ApplyLookReverse(float Duration, const FString& LogText) {
 	bIsLookReverse = true;
 	if (ACC3PlayerController* PlayerController = Cast<ACC3PlayerController>(GetController())) {
 		PlayerController->UpdateDebuff("Debuff_LookReverse", true);
+		PlayerController->UpdateDebuffLog(LogText);
 	}
 	GetWorldTimerManager().ClearTimer(LookReverseTimerHandle);
 	GetWorldTimerManager().SetTimer(LookReverseTimerHandle, this, &ACC3Character::RevertLookReverse, Duration, false);

@@ -14,6 +14,8 @@ ACC3PlayerController::ACC3PlayerController()
 	: HUDWidgetClass(nullptr),
 	HUDWidgetInstance(nullptr),
 	DebuffWidgetClass(nullptr),
+	DebuffLogWidgetClass(nullptr),
+	DebuffLogWidgetInstance(nullptr),
 	MainMenuWidgetClass(nullptr),
 	MainMenuWidgetInstance(nullptr),
 	PauseMenuWidgetClass(nullptr),
@@ -244,6 +246,28 @@ void ACC3PlayerController::UpdateDebuff(FName name, bool bIsOn) {
 		else {
 			SlowIcon->SetVisibility(ESlateVisibility::Hidden);
 		}
-
+	}
+}
+void ACC3PlayerController::UpdateDebuffLog(FString Log) {
+	if (!HUDWidgetInstance) {
+		return;
+	}
+	UUserWidget* DebuffLogBox = Cast<UUserWidget>(HUDWidgetInstance->GetWidgetFromName(TEXT("WBP_DebuffLog")));
+	if (!DebuffLogBox) {
+		return;
+	}
+	if (UTextBlock* DebuffLog = Cast<UTextBlock>(DebuffLogBox->GetWidgetFromName("Text_Debuff"))) {
+		DebuffLog->SetText(FText::FromString(Log));
+	}
+	GetWorldTimerManager().SetTimer(LogTimerHandle, this, &ACC3PlayerController::RemoveDebuffLog, LogTimer, false);
+		
+}
+void ACC3PlayerController::RemoveDebuffLog() {
+	UUserWidget* DebuffLogBox = Cast<UUserWidget>(HUDWidgetInstance->GetWidgetFromName(TEXT("WBP_DebuffLog")));
+	if (!DebuffLogBox) {
+		return;
+	}
+	if (UTextBlock* DebuffLog = Cast<UTextBlock>(DebuffLogBox->GetWidgetFromName("Text_Debuff"))) {
+		DebuffLog->SetText(FText::FromString(TEXT("")));
 	}
 }

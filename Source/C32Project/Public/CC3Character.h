@@ -82,11 +82,11 @@ public:
 	float GetSpeed() const;
 
 	//Debuffs
-	void ApplySlow(float Strength, float Duration);
-	void ApplyBlind(float Duration);
-	void ApplyCameraFix(float Duration);
-	void ApplyMoveReverse(float Duration);
-	void ApplyLookReverse(float Duration);
+	void ApplySlow(float Strength, float Duration, const FString& LogText);
+	void ApplyBlind(float Duration, const FString& LogText);
+	void ApplyCameraFix(float Duration, const FString& LogText);
+	void ApplyMoveReverse(float Duration, const FString& LogText);
+	void ApplyLookReverse(float Duration, const FString& LogText);
 	//buffs
 	void AddHealth(float amount);
 	void AddStamina(float amount);

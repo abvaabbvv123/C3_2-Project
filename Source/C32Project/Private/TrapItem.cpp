@@ -45,19 +45,19 @@ void ATrapItem::ActivateItem(AActor* Activator) {
 	UParticleSystemComponent* Particle = nullptr;
 	if (ACC3Character* Player = Cast<ACC3Character>(Activator)) {
 		if (bIsSlow) {
-			Player->ApplySlow(SlowStrength, SlowDuration);
+			Player->ApplySlow(SlowStrength, SlowDuration, LogText);
 		}
 		if (bIsBlind) {
-			Player->ApplyBlind(BlindDuration);
+			Player->ApplyBlind(BlindDuration, LogText);
 		}
 		if (bIsCameraFix) {
-			Player->ApplyCameraFix(CameraFixDuration);
+			Player->ApplyCameraFix(CameraFixDuration, LogText);
 		}
 		if (bIsReverseMove) {
-			Player->ApplyMoveReverse(MoveReverseDuration);
+			Player->ApplyMoveReverse(MoveReverseDuration, LogText);
 		}
 		if (bIsReverseLook) {
-			Player->ApplyLookReverse(LookReverseDuration);
+			Player->ApplyLookReverse(LookReverseDuration, LogText);
 		}
 	}
 

@@ -26,6 +26,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<UUserWidget> DebuffWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+	TSubclassOf<UUserWidget> DebuffLogWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD")
+	UUserWidget* DebuffLogWidgetInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
 	TSubclassOf<UUserWidget> MainMenuWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD")
 	UUserWidget* MainMenuWidgetInstance;
@@ -50,6 +54,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD")
 	UUserWidget* GameOverWidgetInstance;
 
+	float LogTimer = 5.0f;
+
 	UFUNCTION(BlueprintPure, Category = "HUD")
 	UUserWidget* GetHUDWidget() const;
 	UFUNCTION(BlueprintCallable, Category = "HUD")
@@ -72,6 +78,9 @@ public:
 	void ResultLevel();
 	UFUNCTION(BlueprintCallable)
 	void EndStartLevel();
+
+	void UpdateDebuffLog(FString Log);
+	void RemoveDebuffLog();
 	void UpdateDebuff(FName name, bool bIsOn);
 
 	bool bOnTitle;
@@ -80,4 +89,5 @@ public:
 
 private:
 	FTimerHandle AutoResumeTimerHandle;
+	FTimerHandle LogTimerHandle;
 };
